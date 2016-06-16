@@ -1,0 +1,16 @@
+{application, eworkers,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  cuesport,
+                  exometer
+                 ]},
+  {mod, { eworkers_app, []}},
+  {env, [
+    {pool_size, 32}
+  ]}
+ ]}.
