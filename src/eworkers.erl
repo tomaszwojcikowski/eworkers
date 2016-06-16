@@ -69,6 +69,7 @@ do_execute(Cmd) ->
         tc_op(Cmd)
     catch _:Error ->
         error_loger:error_msg("Error during worker execution ~p, Reason: ~p. Stacktrace: ~p", [Cmd, Error, erlang:get_stacktrace()]),
+        exometer:update([eworkers, errors], 1),
         {error, Error}
     end.
 
@@ -93,6 +94,7 @@ msg_queue_len() ->
     {message_queue_len, L} = process_info(self(), message_queue_len),
     L.
 
-update_metrics(Mod, Fun, Time) ->
-    % L = msg_queue_len(),
-    ok. % TODO: exometer
+update_metrics(_Mod, _Fun, Time) ->
+    exometer:update([eworkers, times], Time),
+    exometer:update([eworkers, queues], msg_queue_len()),
+    ok.
