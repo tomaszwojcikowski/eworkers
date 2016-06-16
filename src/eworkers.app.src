@@ -11,13 +11,13 @@
                  ]},
   {mod, { eworkers_app, []}},
   {env, [
-    {pool_size, 32},
-    {exometer_predefined,
-        [
-         {[eworkers, times], histogram, []},   
-         {[eworkers, errors], spiral, []},   
-         {[eworkers, queues], histogram, []}  
-        ]
-    }
+    {pool_size, 32}
+    % ,{exometer_predefined,
+    %     [
+    %      {[eworkers, times], histogram, []},   
+    %      {[eworkers, errors], spiral, []},   
+    %      {[eworkers, queues], histogram, []}  
+    %     ]
+    % }
   ]}
  ]}.

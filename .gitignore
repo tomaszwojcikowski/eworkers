@@ -3,3 +3,5 @@ _rel/
 deps/
 dialyzer/
 ebin/
+logs/
+test/eworkers_SUITE.beam
