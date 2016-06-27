@@ -8,7 +8,7 @@
 all() -> basic().
 
 basic() ->
-    [simple].
+    [simple, async].
     
 init_per_suite(Config) ->
     {ok, _} = application:ensure_all_started(?APP),
@@ -25,6 +25,23 @@ end_per_testcase(_, Config) ->
 simple(_) ->
     ok = eworkers:call({?MODULE, test, []}).
 
+async(_) ->
+    Msgs = [asd, qwe],
+    [eworkers:cast({?MODULE, test_async, [Msg, self()]}) || Msg <- Msgs],
+    ok = recv(Msgs).
+
+recv([]) ->
+    ok;
+recv([Msg|Rest]) ->
+    receive 
+        Msg ->
+            recv(Rest)
+    after 100 ->
+        error
+    end.
 
 test() ->
     ok.
+
+test_async(Msg, Pid) ->
+    Pid ! Msg.
