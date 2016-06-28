@@ -5,8 +5,8 @@
 -export([start_link/0]).
 -export([add_pool/1]).
 -export([add_pool/2]).
--export([call/1]).
--export([cast/1]).
+-export([call/1, call/2]).
+-export([cast/1, cast/2]).
 
 
 %% gen_server callbacks
@@ -38,27 +38,33 @@ cast(Msg) ->
 cast(PoolName, Msg) ->
     gen_server:cast(get_worker(PoolName), {execute, Msg}). 
 
-
+-spec start_link() -> pid().
 start_link() ->
     gen_server:start_link(?MODULE, [], []).
 
+-spec init([]) -> {ok, term()}.
 init([]) ->
     {ok, []}.
 
+-spec handle_call(term(), pid(), term()) -> term().
 handle_call({execute, Cmd}, _From, State) ->
     Result = do_execute(Cmd),
     {reply, Result, State}.
 
+-spec handle_cast(term(), term()) -> term().
 handle_cast({execute, Cmd}, State) ->
     do_execute(Cmd),
     {noreply, State}.
 
+-spec handle_info(term(), term()) -> term().
 handle_info(_Info, State) ->
     {noreply, State}.
 
+-spec terminate(term(), term()) -> ok.
 terminate(_Reason, _State) ->
     ok.
 
+-spec code_change(term(), term(), term()) -> {ok, term()}.
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
