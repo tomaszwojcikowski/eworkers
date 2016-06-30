@@ -14,9 +14,13 @@
 
 -include("config.hrl").
 
+-type pool_name() :: atom().
+
+-spec get_pool() -> pool_name().
 get_pool() ->
     ?POOL_NAME.
 
+-spec get_pool_size() -> non_neg_integer().  
 get_pool_size() ->
     case application:get_env(?APP, pool_size) of
         undefined ->
@@ -25,16 +29,19 @@ get_pool_size() ->
             C
     end.
 
+-spec start_link() -> pid().
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
+-spec init([]) -> term().
 init([]) ->
     {ok, {{one_for_one, 1000, 3600}, [pool_spec(get_pool(), get_pool_size())]}}.
 
-
+-spec get_worker() -> pid().
 get_worker() ->
     get_worker(?POOL_NAME).
-    
+
+-spec get_worker(pool_name()) -> pid().    
 get_worker(PoolName) ->
     cuesport:get_worker(PoolName).
 
@@ -48,9 +55,11 @@ pool_spec(PoolName, PoolSize) ->
       [PoolName, PoolSize, ChildMods, ChildMFA]},
      transient, 2000, supervisor, [cuesport | ChildMods]}.
 
+-spec add_pool(pool_name()) -> ok.
 add_pool(PoolName) ->
     add_pool(PoolName, get_pool_size()).
 
+-spec add_pool(pool_name(), non_neg_integer()) -> ok.
 add_pool(PoolName, PoolSize) ->
     {ok, _} = supervisor:start_child(?MODULE, pool_spec(PoolName, PoolSize)),
     ok.
