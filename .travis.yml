@@ -2,5 +2,6 @@ sudo: false
 language: erlang
 notifications:
   email: false
+script: "make ct"
 otp_release:
   - 17.5
